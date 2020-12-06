@@ -1,5 +1,5 @@
 """
-Solution for https://adventofcode.com/2020/day/3
+Solution to https://adventofcode.com/2020/day/3
 """
 
 from functools import reduce

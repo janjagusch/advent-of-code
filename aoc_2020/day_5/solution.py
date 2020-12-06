@@ -1,5 +1,5 @@
 """
-
+Solution to https://adventofcode.com/2020/day/5
 """
 
 from operator import mul

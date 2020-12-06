@@ -1,5 +1,5 @@
 """
-Solution for https://adventofcode.com/2020/day/2
+Solution to https://adventofcode.com/2020/day/2
 """
 
 from operator import xor
