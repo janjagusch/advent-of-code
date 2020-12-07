@@ -27,5 +27,9 @@ def solve(password_policies, is_valid_func):
 if __name__ == "__main__":
     with open("./input.txt", mode="r") as file_pointer:
         password_policies = [pwp for pwp in file_pointer.read().split("\n") if pwp]
+    solution_1 = solve(password_policies, is_valid_one)
+    assert solution_1 == 454
+    solution_2 = solve(password_policies, is_valid_two)
+    assert solution_2 == 649
     print(f"The solution to part 1 is '{solve(password_policies, is_valid_one)}'.")
     print(f"The solution to part 2 is '{solve(password_policies, is_valid_two)}'.")

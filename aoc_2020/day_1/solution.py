@@ -1,8 +1,13 @@
 """
-https://adventofcode.com/2020/day/1#part1
+Solution to https://adventofcode.com/2020/day/1.
 """
 
 import itertools
+
+
+def read_input():
+    with open("./input.txt", mode="r") as file_pointer:
+        return [int(expense) for expense in file_pointer.read().split("\n") if expense]
 
 
 def solve_part_one(expense_report):
@@ -18,9 +23,10 @@ def solve_part_two(expense_report):
 
 
 if __name__ == "__main__":
-    with open("./input.txt", mode="r") as file_pointer:
-        expense_report = [
-            int(expense) for expense in file_pointer.read().split("\n") if expense
-        ]
+    expense_report = read_input()
+    solution_1 = solve_part_one(expense_report)
+    assert solution_1 == 838624
+    solution_2 = solve_part_two(expense_report)
+    assert solution_2 == 52764180
     print(f"The solution to part 1 is '{solve_part_one(expense_report)}'.")
     print(f"The solution to part 2 is '{solve_part_two(expense_report)}'.")
