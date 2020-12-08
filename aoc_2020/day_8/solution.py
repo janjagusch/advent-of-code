@@ -1,16 +1,16 @@
 """
-
+Solution to https://adventofcode.com/2020/day/8
 """
 
 from collections import namedtuple
 
-Instruction = namedtuple("Instruction", ["line_number", "type", "value"])
+Instruction = namedtuple("Instruction", ["type", "value"])
 
 
 def read_input():
     with open("./input.txt", mode="r") as file_pointer:
         return {
-            line_number: Instruction(line_number, line.split()[0], int(line.split()[1]))
+            line_number: Instruction(line.split()[0], int(line.split()[1]))
             for line_number, line in enumerate(file_pointer.readlines())
         }
 
@@ -47,9 +47,7 @@ def gen_possible_instructions(instructions):
         if line.type in ("nop", "jmp"):
             new_instructions = dict(instructions)
             new_type = "nop" if line.type == "jmp" else "jmp"
-            new_instructions[line_number] = Instruction(
-                line.line_number, new_type, line.value
-            )
+            new_instructions[line_number] = Instruction(new_type, line.value)
             yield new_instructions
 
 
@@ -67,4 +65,5 @@ if __name__ == "__main__":
     assert solution_1 == 1501
     print(f"The solution to part 1 is '{solution_1}'.")
     solution_2 = solve_part_two(instructions)
+    assert solution_2 == 509
     print(f"The solution to part 2 is '{solution_2}'.")
