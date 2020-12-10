@@ -26,7 +26,7 @@ def solve_part_one(adapters):
     return counter[1] * counter[3]
 
 
-def calc_compatibility_map(adapters):
+def calc_compat_map(adapters):
     return {
         adapter: tuple(
             sorted(
@@ -39,32 +39,32 @@ def calc_compatibility_map(adapters):
     }
 
 
-def recur_solve(compat_map, i_compat_map, solve_map, solve_tuple):
-    k, v = solve_tuple
-    solve_map[k] = v
-    for possible_solve_key in i_compat_map[k]:
-        if possible_solve_key not in solve_map and all(
-            kk in solve_map for kk in compat_map[possible_solve_key]
+def calc_solved_map(compat_map, i_compat_map, solved_map, solved_tuple):
+    solved_key, solved_value = solved_tuple
+    solved_map[solved_key] = solved_value
+    for possibly_solved_key in i_compat_map[solved_key]:
+        if possibly_solved_key not in solved_map and all(
+            k in solved_map for k in compat_map[possibly_solved_key]
         ):
-            recur_solve(
+            calc_solved_map(
                 compat_map,
                 i_compat_map,
-                solve_map,
+                solved_map,
                 (
-                    possible_solve_key,
-                    sum(solve_map[kkk] for kkk in compat_map[possible_solve_key]),
+                    possibly_solved_key,
+                    sum(solved_map[k] for k in compat_map[possibly_solved_key]),
                 ),
             )
-    return solve_map
+    return solved_map
 
 
 def solve_part_two(adapters):
-    compat_map = calc_compatibility_map(add_first_and_last_adapter(adapters))
+    compat_map = calc_compat_map(add_first_and_last_adapter(adapters))
     i_compat_map = {
         i_key: set(key for key, val in compat_map.items() if i_key in val)
         for i_key in compat_map
     }
-    return recur_solve(compat_map, i_compat_map, {}, (max(adapters), 1))[0]
+    return calc_solved_map(compat_map, i_compat_map, {}, (max(adapters), 1))[0]
 
 
 if __name__ == "__main__":
