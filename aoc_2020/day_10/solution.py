@@ -1,5 +1,5 @@
 """
-
+Solution to https://adventofcode.com/2020/day/10
 """
 
 from collections import Counter
@@ -37,14 +37,6 @@ def calc_compatibility_map(adapters):
         )
         for adapter in adapters
     }
-
-
-def walk(compat_map, node=1):
-    if not compat_map[node]:
-        yield True
-    for compat_node in compat_map[node]:
-        for n in walk(compat_map, compat_node):
-            yield n
 
 
 def recur_solve(compat_map, i_compat_map, solve_map, solve_tuple):
