@@ -25,20 +25,6 @@ def look_into_direction(seats, pos, direction, max_horizon):
     return None
 
 
-def _format_seat(seat):
-    if seat is None:
-        return "."
-    if seat:
-        return "#"
-    if not seat:
-        return "L"
-    raise ValueError(seat)
-
-
-def display(seats):
-    return "\n".join("".join(_format_seat(seat) for seat in row) for row in seats)
-
-
 def _decode_value(val):
     if val == "L":
         return False
@@ -64,18 +50,6 @@ def read_input():
 def gen_neighbors(seats, pos, max_horizon):
     for direction in _DIRECTIONS:
         yield look_into_direction(seats, pos, direction, max_horizon)
-
-
-def _apply_rule(seats, pos):
-    x, y = pos
-    if (seat := seats[y][x]) is None:
-        return None
-    n_occupied = sum(neighbor for neighbor in gen_neighbors(seats, pos, 1) if neighbor)
-    if not seat and not n_occupied:
-        return True
-    if seat and n_occupied >= 4:
-        return False
-    return seat
 
 
 def rule_1(seat, neighbors):
