@@ -61,7 +61,7 @@ DIRECTION_TO_VECTOR = {
 }
 
 
-def navigate(navigation_instructions):
+def navigate_1(navigation_instructions):
     pos = Array(0, 0)
     degree = 90
     for instruction in navigation_instructions:
@@ -85,12 +85,47 @@ def navigate(navigation_instructions):
     return pos
 
 
+def navigate_2(navigation_instructions):
+    waypoint = Array(1, 10)
+    pos = Array(0, 0)
+    for instruction in navigation_instructions:
+        if instruction.action in ("N", "S", "E", "W"):
+            waypoint += DIRECTION_TO_VECTOR[instruction.action] * instruction.value
+        elif instruction.action in ("L", "R"):
+            val = (
+                instruction.value * -1
+                if instruction.action == "L"
+                else instruction.value
+            ) % 360
+            if val == 180:
+                waypoint *= -1
+            elif val == 90:
+                waypoint = Array(-1 * waypoint[1], waypoint[0])
+            elif val == 270:
+                waypoint = Array(waypoint[1], -1 * waypoint[0])
+            else:
+                raise KeyError(val)
+        elif instruction.action == "F":
+            pos += waypoint * instruction.value
+        else:
+            raise KeyError(instruction.action)
+
+    return pos
+
+
 def solve_part_one(navigation_instructions):
-    return sum(abs(val) for val in navigate(navigation_instructions))
+    return sum(abs(val) for val in navigate_1(navigation_instructions))
+
+
+def solve_part_two(navigation_instructions):
+    return sum(abs(val) for val in navigate_2(navigation_instructions))
 
 
 if __name__ == "__main__":
     navigation_instructions = read_input()
     solution_1 = solve_part_one(navigation_instructions)
-    assert solve_part_one == 362
+    assert solution_1 == 362
     print(f"The solution to part 1 is '{solution_1}'.")
+    solution_2 = solve_part_two(navigation_instructions)
+    assert solution_2 == 29895
+    print(f"The solution to part 2 is '{solution_2}'.")
