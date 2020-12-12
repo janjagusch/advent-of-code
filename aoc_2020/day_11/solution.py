@@ -135,4 +135,5 @@ if __name__ == "__main__":
     assert solution_1 == 2254
     print(f"The solution to part 1 is '{solution_1}'.")
     solution_2 = solve_part_two(seats)
+    assert solution_2 == 2004
     print(f"The solution to part 2 is '{solution_2}'.")
