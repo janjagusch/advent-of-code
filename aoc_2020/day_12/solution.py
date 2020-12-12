@@ -92,4 +92,5 @@ def solve_part_one(navigation_instructions):
 if __name__ == "__main__":
     navigation_instructions = read_input()
     solution_1 = solve_part_one(navigation_instructions)
+    assert solve_part_one == 362
     print(f"The solution to part 1 is '{solution_1}'.")
