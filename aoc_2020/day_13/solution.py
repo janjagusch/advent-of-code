@@ -1,10 +1,9 @@
 """
-
+Solution to https://adventofcode.com/2020/day/13
 """
 
-from math import ceil
-
-from ortools.linear_solver import pywraplp
+from itertools import count
+from math import ceil, prod
 
 
 def read_file():
@@ -28,48 +27,58 @@ def solve_part_one(earliest_departure, bus_schedule):
     return min(waiting_times) * bus_schedule[waiting_times.index(min(waiting_times))]
 
 
+def assert_relative_prime(num_1, num_2):
+    """
+    Asserts that two numbers don't share a common prime factor.
+    Currently not implemented!
+
+    Raises:
+        ValueError: If the two numbers share a least one common prime factor.
+    """
+    pass
+
+
+def guess_mod_inverse(n, mod):
+    """
+    Guesses the modulo inverse x, such that
+        <n> * x = 1 (mod <mod>)
+
+    This is a trivial implementation that works well for rather small numbers.
+    For big numbers, the extended euclidean algorithm would be best.
+    """
+    for c in count(start=1):
+        if (c * n) % mod == 1:
+            return c
+
+
+def chinese(remainder, moduli):
+    """
+    Applies the chinese remainder theorem.
+    """
+    assert len(remainder) == len(moduli)
+    for num_1 in moduli:
+        for num_2 in moduli:
+            if num_1 != num_2:
+                assert_relative_prime(num_1, num_2)
+    N_prod = prod(moduli)
+    N = tuple(int(N_prod / mod) for mod in moduli)
+    X = tuple(guess_mod_inverse(n, mod) for n, mod in zip(N, moduli))
+    x = sum(prod((bi, ni, xi)) for bi, ni, xi in zip(remainder, N, X))
+    x %= prod(moduli)
+    return x, prod(moduli)
+
+
 def solve_part_two(bus_schedule):
-    constraints = tuple((val, i) for i, val in enumerate(bus_schedule) if val)
-    solver = pywraplp.Solver.CreateSolver("SCIP")
-
-    infinity = solver.infinity()
-    t = solver.IntVar(100_000_000_000_000, infinity, "t")
-    # t = solver.IntVar(0.0, infinity, "t")
-    variables = tuple(
-        solver.IntVar(0.0, infinity, f"x{i}") for i in range(len(constraints))
-    )
-    print("Number of variables =", solver.NumVariables())
-
-    for var, (multiplier, offset) in zip(variables, constraints):
-        solver.Add(t == multiplier * var - offset)
-    # solver.Add(t >= 1)
-    print("Number of constraints =", solver.NumConstraints())
-
-    solver.Minimize(t)
-
-    status = solver.Solve()
-
-    if status == pywraplp.Solver.OPTIMAL:
-        print("Solution:")
-        print("Objective value =", solver.Objective().Value())
-        print("t =", t.solution_value())
-        for var in variables:
-            print(f"{var.name()} = {var.solution_value()}")
-    else:
-        print("The problem does not have an optimal solution.")
-
-    print("\nAdvanced usage:")
-    print("Problem solved in %f milliseconds" % solver.wall_time())
-    print("Problem solved in %d iterations" % solver.iterations())
-    print("Problem solved in %d branch-and-bound nodes" % solver.nodes())
-
-    return t.solution_value()
+    moduli = tuple(val for val in bus_schedule if val)
+    remainder = tuple(-i for i, val in enumerate(bus_schedule) if val)
+    return chinese(remainder, moduli)[0]
 
 
 if __name__ == "__main__":
     earliest_departure, bus_schedule = read_file()
     solution_1 = solve_part_one(earliest_departure, bus_schedule)
-    # assert solution_1 == 2382
+    assert solution_1 == 2382
     print(f"The solution to part 1 is '{solution_1}'.")
     solution_2 = solve_part_two(bus_schedule)
+    assert solution_2 == 906332393333683, f"Wrong solution: {solution_2}."
     print(f"The solution to part 2 is '{solution_2}'.")
