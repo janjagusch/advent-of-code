@@ -9,11 +9,6 @@ from collections import namedtuple
 Instruction = namedtuple("Instruction", ["type", "value", "address"])
 
 
-BIT_MASK_36 = int("".join("1" for _ in range(36)), 2)
-STEPWISE_MASKS = tuple(2 ** x for x in range(36))
-I_STEPWISE_MASKS = tuple(~mask & BIT_MASK_36 for mask in STEPWISE_MASKS)
-
-
 def _highest_power_of_two(val, max_power=36):
     for power in range(max_power + 1):
         if 2 ** power > val:
