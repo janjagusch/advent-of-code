@@ -1,5 +1,5 @@
 """
-
+Solution to https://adventofcode.com/2020/day/14
 """
 
 from itertools import chain, combinations
