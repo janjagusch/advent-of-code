@@ -1,5 +1,5 @@
 """
-
+Solution to https://adventofcode.com/2020/day/15
 """
 
 from itertools import count, islice
