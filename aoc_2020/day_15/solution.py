@@ -47,8 +47,15 @@ def solve_part_one(numbers):
     return tuple(islice(play_game(numbers), 2020))[-1]
 
 
+def solve_part_two(numbers):
+    return tuple(islice(play_game(numbers), 30_000_000))[-1]
+
+
 if __name__ == "__main__":
     numbers = read_input()
     solution_1 = solve_part_one(numbers)
     assert solution_1 == 249
     print(f"The solution to part 1 is '{solve_part_one(numbers)}'.")
+    solution_2 = solve_part_two(numbers)
+    assert solution_2 == 41687
+    print(f"The solution to part 2 is '{solve_part_two(numbers)}'.")
