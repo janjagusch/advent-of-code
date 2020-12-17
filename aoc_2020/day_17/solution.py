@@ -1,5 +1,5 @@
 """
-
+Solution to https://adventofcode.com/2020/day/17
 """
 
 from collections import namedtuple
@@ -81,7 +81,6 @@ def change_state(current_state, neighbor_states):
     the cube remains active. Otherwise, the cube becomes inactive.
     If a cube is inactive but exactly 3 of its neighbors are active,
     the cube becomes active. Otherwise, the cube remains inactive.
-
     """
     neighbors_active = sum(neighbor_states)
     if current_state:
@@ -109,25 +108,23 @@ def cycle(pocket_dimension, directions):
     return new_pocket_dimension
 
 
-def solve_part_one(pocket_dimension):
-    n_dim = 3
-    directions = tuple(
+def calc_directions(n_dim):
+    return tuple(
         Array(*direction)
         for direction in product(*tuple((-1, 0, 1) for _ in range(n_dim)))
         if any(val for val in direction)
     )
+
+
+def solve_part_one(pocket_dimension):
+    directions = calc_directions(3)
     for _ in range(6):
         pocket_dimension = cycle(pocket_dimension, directions)
     return len(pocket_dimension)
 
 
 def solve_part_two(pocket_dimension):
-    n_dim = 4
-    directions = tuple(
-        Array(*direction)
-        for direction in product(*tuple((-1, 0, 1) for _ in range(n_dim)))
-        if any(val for val in direction)
-    )
+    directions = calc_directions(4)
     for _ in range(6):
         pocket_dimension = cycle(pocket_dimension, directions)
     return len(pocket_dimension)
@@ -136,10 +133,10 @@ def solve_part_two(pocket_dimension):
 if __name__ == "__main__":
     pocket_dimension = read_input()
     solution_1 = solve_part_one(pocket_dimension)
-    # assert solution_1 == 386
-    print(solution_1)
-    # Adding another dimension.
+    assert solution_1 == 386
+    print(f"The solution to part 1 is '{solution_1}'.")
+    # Adding another dimension - quick and dirty.
     pocket_dimension = set(Array(*array._vals, 0) for array in pocket_dimension)
     solution_2 = solve_part_two(pocket_dimension)
     assert solution_2 == 2276
-    print(solution_2)
+    print(f"The solution to part 2 is '{solution_2}'.")
