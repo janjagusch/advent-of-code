@@ -51,12 +51,6 @@ class Array:
         return self._vals.__hash__()
 
 
-_N_DIM = 3
-_DIRECTIONS = tuple(
-    Array(*direction)
-    for direction in product(*tuple((-1, 0, 1) for _ in range(_N_DIM)))
-    if any(val for val in direction)
-)
 Cube = namedtuple("Cube", ["position", "state"])
 
 
@@ -71,13 +65,13 @@ def read_input():
         )
 
 
-def gen_neighbor_positions(position):
-    for direction in _DIRECTIONS:
+def gen_neighbor_positions(position, directions):
+    for direction in directions:
         yield position + direction
 
 
-def gen_neighbor_positions_values(pocket_dimension, position):
-    for neighbor_position in gen_neighbor_positions(position):
+def gen_neighbor_positions_values(pocket_dimension, position, directions):
+    for neighbor_position in gen_neighbor_positions(position, directions):
         yield Cube(neighbor_position, neighbor_position in pocket_dimension)
 
 
@@ -95,16 +89,18 @@ def change_state(current_state, neighbor_states):
     return neighbors_active == 3
 
 
-def cycle(pocket_dimension):
+def cycle(pocket_dimension, directions):
     new_pocket_dimension = set()
     for cube in set(
         cube
         for position in pocket_dimension
-        for cube in gen_neighbor_positions_values(pocket_dimension, position)
+        for cube in gen_neighbor_positions_values(
+            pocket_dimension, position, directions
+        )
     ):
 
         neighbors = tuple(
-            gen_neighbor_positions_values(pocket_dimension, cube.position)
+            gen_neighbor_positions_values(pocket_dimension, cube.position, directions)
         )
         neighbor_states = tuple(neighbor.state for neighbor in neighbors)
         new_cube = Cube(cube.position, change_state(cube.state, neighbor_states))
@@ -114,13 +110,36 @@ def cycle(pocket_dimension):
 
 
 def solve_part_one(pocket_dimension):
+    n_dim = 3
+    directions = tuple(
+        Array(*direction)
+        for direction in product(*tuple((-1, 0, 1) for _ in range(n_dim)))
+        if any(val for val in direction)
+    )
     for _ in range(6):
-        pocket_dimension = cycle(pocket_dimension)
+        pocket_dimension = cycle(pocket_dimension, directions)
+    return len(pocket_dimension)
+
+
+def solve_part_two(pocket_dimension):
+    n_dim = 4
+    directions = tuple(
+        Array(*direction)
+        for direction in product(*tuple((-1, 0, 1) for _ in range(n_dim)))
+        if any(val for val in direction)
+    )
+    for _ in range(6):
+        pocket_dimension = cycle(pocket_dimension, directions)
     return len(pocket_dimension)
 
 
 if __name__ == "__main__":
     pocket_dimension = read_input()
     solution_1 = solve_part_one(pocket_dimension)
-    assert solution_1 == 386
+    # assert solution_1 == 386
     print(solution_1)
+    # Adding another dimension.
+    pocket_dimension = set(Array(*array._vals, 0) for array in pocket_dimension)
+    solution_2 = solve_part_two(pocket_dimension)
+    assert solution_2 == 2276
+    print(solution_2)
