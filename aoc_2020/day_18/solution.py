@@ -32,7 +32,6 @@ def find_splitting_operator_index(expression, precedence_map=None):
     precedence_map = precedence_map or {}
     if precedence_map:
         min_precedence = min(precedence_map.values())
-        print(f"min precedence is '{min_precedence}'.")
     nested = 0
     split_precedence = None
     split_i = None
@@ -71,11 +70,9 @@ def has_removeable_paranthesis(expression):
 
 
 def process_expression(expression, precedence_map=None):
-    print(expression)
     while has_removeable_paranthesis(expression):
         expression = expression[1:-1]
     splitting_index = find_splitting_operator_index(expression, precedence_map)
-    print(splitting_index)
     first_part = expression[: splitting_index - 1]
     if first_part.startswith("("):
         first_part = process_expression(first_part, precedence_map)
@@ -114,13 +111,9 @@ def solve_part_two(expressions):
 
 
 if __name__ == "__main__":
-    # expressions = read_input()
-    # solution_1 = solve_part_one(expressions)
-    # assert solution_1 == 2743012121210
-    # print(f"The solution to part 1 is '{solution_1}'.")
-    precedence_map = {sum: 2, prod: 1}
-    print(
-        process_expression(
-            "((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2", precedence_map
-        ).calculate()
-    )
+    expressions = read_input()
+    solution_1 = solve_part_one(expressions)
+    assert solution_1 == 2743012121210
+    print(f"The solution to part 1 is '{solution_1}'.")
+    solution_2 = solve_part_two(expressions)
+    print(f"The solution to part 2 is '{solution_2}'.")
