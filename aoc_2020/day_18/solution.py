@@ -78,12 +78,17 @@ def process_expression(expression):
     return Node(operator, (first_part, second_part))
 
 
+def read_input():
+    with open("./input.txt", mode="r") as file_pointer:
+        return tuple(line for line in file_pointer.read().split("\n") if line)
+
+
+def solve_part_one(expressions):
+    return sum(process_expression(expression).calculate() for expression in expressions)
+
+
 if __name__ == "__main__":
-    print(process_expression("1 + (2 * 3) + (4 * (5 + 6))").calculate())
-    print(process_expression("2 * 3 + (4 * 5)").calculate())
-    print(process_expression("5 * 9 * (7 * 3 * 3 + 9 * 3 + (8 + 6 * 4))").calculate())
-    print(
-        process_expression(
-            "((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2"
-        ).calculate()
-    )
+    expressions = read_input()
+    solution_1 = solve_part_one(expressions)
+    assert solution_1 == 2743012121210
+    print(f"The solution to part 1 is '{solution_1}'.")
