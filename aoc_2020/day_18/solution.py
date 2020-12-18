@@ -115,4 +115,5 @@ if __name__ == "__main__":
     assert solution_1 == 2743012121210
     print(f"The solution to part 1 is '{solution_1}'.")
     solution_2 = solve_part_two(expressions)
+    assert solution_2 == 65658760783597
     print(f"The solution to part 2 is '{solution_2}'.")
