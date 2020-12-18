@@ -28,16 +28,32 @@ OPERATOR_MAP = {
 }
 
 
-def find_splitting_operator_index(expression):
+def find_splitting_operator_index(expression, precedence_map=None):
+    precedence_map = precedence_map or {}
+    if precedence_map:
+        min_precedence = min(precedence_map.values())
+        print(f"min precedence is '{min_precedence}'.")
     nested = 0
+    split_precedence = None
+    split_i = None
     for i, char in enumerate(reversed(expression)):
         if char in OPERATOR_MAP and not nested:
-            return len(expression) - (i + 1)
+            if not precedence_map:
+                return len(expression) - (i + 1)
+            op = OPERATOR_MAP[char]
+            precedence = precedence_map[op]
+            if precedence == min_precedence:
+                return len(expression) - (i + 1)
+            if split_precedence is None or precedence < split_precedence:
+                split_precedence = precedence
+                split_i = i
         if char == "(":
             nested += 1
         if char == ")":
             nested -= 1
         assert nested <= 0
+    if split_i is not None:
+        return len(expression) - (split_i + 1)
     raise RuntimeError(expression)
 
 
@@ -54,26 +70,28 @@ def has_removeable_paranthesis(expression):
     return True
 
 
-def process_expression(expression):
-    if has_removeable_paranthesis(expression):
+def process_expression(expression, precedence_map=None):
+    print(expression)
+    while has_removeable_paranthesis(expression):
         expression = expression[1:-1]
-    splitting_index = find_splitting_operator_index(expression)
+    splitting_index = find_splitting_operator_index(expression, precedence_map)
+    print(splitting_index)
     first_part = expression[: splitting_index - 1]
     if first_part.startswith("("):
-        first_part = process_expression(first_part)
+        first_part = process_expression(first_part, precedence_map)
     else:
         try:
             first_part = int(first_part)
         except ValueError:
-            first_part = process_expression(first_part)
+            first_part = process_expression(first_part, precedence_map)
     second_part = expression[splitting_index + 2 :]
     if second_part.startswith("("):
-        second_part = process_expression(second_part)
+        second_part = process_expression(second_part, precedence_map)
     else:
         try:
             second_part = int(second_part)
         except ValueError:
-            second_part = process_expression(second_part)
+            second_part = process_expression(second_part, precedence_map)
     operator = OPERATOR_MAP[expression[splitting_index]]
     return Node(operator, (first_part, second_part))
 
@@ -87,8 +105,22 @@ def solve_part_one(expressions):
     return sum(process_expression(expression).calculate() for expression in expressions)
 
 
+def solve_part_two(expressions):
+    precedence_map = {sum: 2, prod: 1}
+    return sum(
+        process_expression(expression, precedence_map).calculate()
+        for expression in expressions
+    )
+
+
 if __name__ == "__main__":
-    expressions = read_input()
-    solution_1 = solve_part_one(expressions)
-    assert solution_1 == 2743012121210
-    print(f"The solution to part 1 is '{solution_1}'.")
+    # expressions = read_input()
+    # solution_1 = solve_part_one(expressions)
+    # assert solution_1 == 2743012121210
+    # print(f"The solution to part 1 is '{solution_1}'.")
+    precedence_map = {sum: 2, prod: 1}
+    print(
+        process_expression(
+            "((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2", precedence_map
+        ).calculate()
+    )
