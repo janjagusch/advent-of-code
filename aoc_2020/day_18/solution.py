@@ -1,5 +1,5 @@
 """
-
+Solution to https://adventofcode.com/2020/day/18
 """
 
 from math import prod
@@ -30,8 +30,7 @@ OPERATOR_MAP = {
 
 def find_splitting_operator_index(expression, precedence_map=None):
     precedence_map = precedence_map or {}
-    if precedence_map:
-        min_precedence = min(precedence_map.values())
+    min_precedence = min(precedence_map.values()) if precedence_map else None
     nested = 0
     split_precedence = None
     split_i = None
