@@ -38,71 +38,6 @@ def _apply_pattern(expression, pattern):
     raise RuleError(expression, pattern)
 
 
-def _call(rule_chain, rules, ind):
-    for rule in rule_chain:
-        if rule not in rules:
-            print((rule, ind))
-            ind += 1
-        else:
-            ind = _call(rules[rule], rules, ind)
-    return ind
-
-
-def _call_2(sub_rules, rules, indices):
-    new_indices = []
-    for index in indices:
-        for rule_chain in sub_rules:
-            for rule in rule_chain:
-                if rule not in rule:
-                    print((rule, ind))
-                    ind += 1
-
-
-def _call_2(sub_rules, rules, ind):
-
-    for rule in rule_chain:
-        if rule not in rules:
-            print((rule, ind))
-            ind += 1
-        else:
-            ind = _call(rules[rule], rules, ind)
-    return ind
-
-
-def _apply_rule(expression, rule, rules):
-    print(expression)
-    rule_applies = False
-    for sub_rule in rule:
-        sub_rule_applies = True
-        for pattern in sub_rule:
-            print(pattern)
-            if pattern in rules:
-                func = partial(_apply_rule, rule=rules[pattern], rules=rules)
-            else:
-                func = partial(_apply_pattern, pattern=pattern)
-            try:
-                expression = func(expression)
-            except RuleError:
-                sub_rule_applies = False
-                break
-        if sub_rule_applies:
-            rule_applies = True
-            break
-    if not rule_applies:
-        error = RuleError(expression, rule)
-        print(error)
-        raise error
-    return expression
-
-
-def match_rule(message, start_rule, rules):
-    try:
-        expression = _apply_rule(message, start_rule, rules)
-    except RuleError:
-        return False
-    return not expression
-
-
 def solve_expressions(expressions, sub_rules, rules):
     for rule_chain in sub_rules:
         possible_expressions = tuple(expressions)
@@ -136,16 +71,5 @@ def solve_part_one(messages, rules):
 if __name__ == "__main__":
     rules, messages = read_input()
     solution_1 = solve_part_one(messages, rules)
+    assert solution_1 == 285
     print(f"The solution to part 1 is '{solution_1}'.")
-    # messages = (
-    #     "aaaabb",
-    #     "aaabab",
-    #     "abbabb",
-    #     "abbbab",
-    #     "aabaab",
-    #     "aabbbb",
-    #     "abaaab",
-    #     "ababbb",
-    # )
-    # for message in messages:
-    #     assert solve(message, rules, "0")
