@@ -38,19 +38,17 @@ def _apply_pattern(expression, pattern):
 
 def solve_expressions(expressions, sub_rules, rules):
     for rule_chain in sub_rules:
-        possible_expressions = tuple(expressions)
+        possible_expressions = set(expressions)
         for rule in rule_chain:
             if rule in rules:
-                possible_expressions = tuple(
+                possible_expressions = set(
                     solve_expressions(possible_expressions, rules[rule], rules)
                 )
             else:
-                new_possible_expressions = []
+                new_possible_expressions = set()
                 for expression in possible_expressions:
                     try:
-                        new_possible_expressions.append(
-                            _apply_pattern(expression, rule)
-                        )
+                        new_possible_expressions.add(_apply_pattern(expression, rule))
                     except RuleError:
                         continue
                 possible_expressions = new_possible_expressions
