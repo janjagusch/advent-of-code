@@ -33,7 +33,7 @@ def read_input():
 def _apply_pattern(expression, pattern):
     if expression.startswith(pattern):
         return expression[len(pattern) :]
-    raise RuleError(expression, pattern)
+    return None
 
 
 def solve_expressions(expressions, sub_rules, rules):
@@ -47,10 +47,9 @@ def solve_expressions(expressions, sub_rules, rules):
             else:
                 new_possible_expressions = set()
                 for expression in possible_expressions:
-                    try:
-                        new_possible_expressions.add(_apply_pattern(expression, rule))
-                    except RuleError:
-                        continue
+                    exp = _apply_pattern(expression, rule)
+                    if exp is not None:
+                        new_possible_expressions.add(exp)
                 possible_expressions = new_possible_expressions
         for expression in possible_expressions:
             yield expression
