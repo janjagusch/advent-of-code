@@ -2,8 +2,6 @@
 
 """
 
-from functools import partial
-
 
 class RuleError(Exception):
     """
