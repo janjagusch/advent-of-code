@@ -32,13 +32,13 @@ def _apply_pattern(expression, pattern):
     return None
 
 
-def solve_expressions(expressions, sub_rules, rules):
+def _gen__matching_expressions(expressions, sub_rules, rules):
     for rule_chain in sub_rules:
         possible_expressions = set(expressions)
         for rule in rule_chain:
             if rule in rules:
                 possible_expressions = set(
-                    solve_expressions(possible_expressions, rules[rule], rules)
+                    _gen__matching_expressions(possible_expressions, rules[rule], rules)
                 )
             else:
                 new_possible_expressions = set()
@@ -51,12 +51,12 @@ def solve_expressions(expressions, sub_rules, rules):
             yield expression
 
 
-def solve(message, rules, start_key):
-    return "" in solve_expressions((message,), rules[start_key], rules)
+def _match(message, rule, rules):
+    return "" in _gen__matching_expressions((message,), rule, rules)
 
 
 def solve_part_one(messages, rules):
-    return sum(solve(message, rules, "0") for message in messages)
+    return sum(_match(message, rules["0"], rules) for message in messages)
 
 
 def _solve_part_two(message, rules):
@@ -72,7 +72,11 @@ def _solve_part_two(message, rules):
 
     def chain_apply_rule(expressions, rule, rules):
         for c in count(start=0):
-            if (new_expressions := set(solve_expressions(expressions, rule, rules))) :
+            if (
+                new_expressions := set(
+                    _gen__matching_expressions(expressions, rule, rules)
+                )
+            ) :
                 expressions = new_expressions
             else:
                 break
