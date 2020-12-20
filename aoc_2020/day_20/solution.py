@@ -5,7 +5,7 @@
 from collections import namedtuple
 from copy import copy
 from enum import Enum
-from itertools import product
+from itertools import islice, product
 from math import prod, sqrt
 from typing import Dict, Set
 
@@ -167,8 +167,8 @@ def solve_part_one(images):
     composition = {Array(x, y): None for x in range(shape) for y in range(shape)}
     # print(tuple(gen_neighbors(Array(2, 2), composition)))
     # print(find_most_constrained_position(composition))
-    solutions = tuple(solve(composition, images))
-    sol = solutions[0]
+    sol = tuple(islice(solve(composition, images), 0, 1))[0]
+    # sol = solutions[0]
     corners = tuple(Array(x, y) for x, y in product((0, shape - 1), (0, shape - 1)))
     return prod(sol[c].image_id for c in corners)
     print({key: value.image_id for key, value in solutions[-1].items()})
