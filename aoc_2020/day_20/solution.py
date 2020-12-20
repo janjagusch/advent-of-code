@@ -163,7 +163,7 @@ def find_most_constrained_position(composition: Dict) -> Array:
     return max(constrain_map, key=constrain_map.get)
 
 
-def solve_part_one(images):
+def solve_part_one(images, matching_border_map):
     shape = int(sqrt(len(images)))
     composition = {Array(x, y): None for x in range(shape) for y in range(shape)}
     # print(tuple(gen_neighbors(Array(2, 2), composition)))
@@ -183,6 +183,25 @@ def matches_border_with_neighbors(image: Image, position: Array, composition: Di
     return True
 
 
+# def matches_border_with_neighbors(
+#     image_id, transformation_id, position, composition, matching_border_map
+# ):
+#     for direction, _, neighbor in gen_neighbors(position, composition):
+#         if neighbor is not None:
+#             n_image_id, n_transformation_id = neighbor
+#             if not matching_border_map[
+#                 (
+#                     image_id,
+#                     transformation_id,
+#                     n_image_id,
+#                     n_transformation_id,
+#                     direction,
+#                 )
+#             ]:
+#                 return False
+#     return True
+
+
 def solve(composition: Dict, images: Set):
     if not images:
         yield composition
@@ -196,6 +215,31 @@ def solve(composition: Dict, images: Set):
                     new_images = tuple(i for i in images if i != image)
                     for solution in solve(new_composition, new_images):
                         yield solution
+
+
+# def solve(composition: Dict, image_ids: Set, matching_border_map):
+#     if not image_ids:
+#         yield composition
+#     else:
+#         position = find_most_constrained_position(composition)
+#         for image_id in image_ids:
+#             for transformation_id in range(16):
+#                 if matches_border_with_neighbors(
+#                     image_id,
+#                     transformation_id,
+#                     position,
+#                     composition,
+#                     matching_border_map,
+#                 ):
+#                     new_composition = {
+#                         **composition,
+#                         position: (image_id, transformation_id),
+#                     }
+#                     new_images = set(i for i in image_ids if i != image_id)
+#                     for solution in solve(
+#                         new_composition, new_images, matching_border_map
+#                     ):
+#                         yield solution
 
 
 # def solve(compositions: Set, images: Set):
@@ -215,10 +259,31 @@ def solve(composition: Dict, images: Set):
 #     return solve(new_compositions, images[1:])
 
 
+def calc_matching_border_map(images):
+    matching_border_map = {}
+    for image1 in images:
+        for transid1, trans1 in enumerate(gen_transformations(image1.data)):
+            for image2 in images:
+                for transid2, trans2 in enumerate(gen_transformations(image2.data)):
+                    for direction in Directions:
+                        key = (
+                            image1.image_id,
+                            transid1,
+                            image2.image_id,
+                            transid2,
+                            direction,
+                        )
+                        value = matching_border(image1.data, image2.data, direction)
+                        matching_border_map[key] = value
+    return matching_border_map
+
+
 if __name__ == "__main__":
     test_matching_border()
     test_gen_transformations()
     images = read_input()
     print(len(images))
-    solution_1 = solve_part_one(images)
+    matching_border_map = calc_matching_border_map(images)
+    print(len(matching_border_map))
+    solution_1 = solve_part_one(images, matching_border_map)
     print(solution_1)
