@@ -64,7 +64,8 @@ def _process_image_data(image_data):
 
 
 def _process_image(image):
-    image_id = int(image.split("\n")[0].replace("Tile ", "").replace(":", ""))
+    image_str = image.split("\n")[0].replace("Tile ", "").replace(":", "").strip()
+    image_id = int(image_str)
     data = _process_image_data(tuple(line for line in image.split("\n")[1:] if line))
     return Image(image_id, data)
 
