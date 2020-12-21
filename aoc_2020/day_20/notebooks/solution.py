@@ -364,16 +364,18 @@ reconstructed_image.shape
 # ## Part 2
 
 sea_monster_str = """
-..................#.
-#....##....##....###
-.#..#..#..#..#..#...
+                  #
+#    ##    ##    ###
+ #  #  #  #  #  #
 """.strip(
     "\n"
 )
 
+print(sea_monster_str)
+
 sea_monster_image = np.array(
     tuple(
-        tuple(val == "#" for val in row if val) for row in sea_monster_str.split("\n") if row
+        tuple(val == "#" for val in row) for row in sea_monster_str.split("\n") if row
     )
 )
 
