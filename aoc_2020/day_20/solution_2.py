@@ -1,6 +1,7 @@
 from collections import namedtuple
 from copy import deepcopy
 from enum import Enum
+from math import prod
 
 N_DIM = 10
 FLIP_NUMBERS = {i: int(format(i, f"0{N_DIM}b")[::-1], 2) for i in range(2 ** N_DIM)}
@@ -210,7 +211,7 @@ class Tile:
 
 
 def read_input():
-    with open("./test.txt", mode="r") as file_pointer:
+    with open("./input.txt", mode="r") as file_pointer:
         return tuple(
             Tile.from_input(image) for image in file_pointer.read().split("\n\n")
         )
@@ -237,8 +238,13 @@ if __name__ == "__main__":
     print(tiles[0].borders)
     print(tiles[0].flip_borders)
     print(tiles[0].matches_border(tiles[3]))
-    for tile1 in tiles:
-        for tile2 in tiles:
-            if tile1 != tile2:
-                if tile1.matches_border(tile2):
-                    print(f"tile {tile1._id} shares a border with tile {tile2._id}.")
+    matching_border_map = {
+        tile1._id: set(
+            tile2._id
+            for tile2 in tiles
+            if tile1.matches_border(tile2) and tile1 != tile2
+        )
+        for tile1 in tiles
+    }
+    print({key: len(val) for key, val in matching_border_map.items() if len(val) == 2})
+    print(prod(key for key, value in matching_border_map.items() if len(value) == 2))
