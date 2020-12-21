@@ -19,7 +19,7 @@
 
 from collections import namedtuple
 from copy import copy
-from itertools import islice, product
+from itertools import islice
 
 Food = namedtuple("Food", ["ingredients", "allergens"])
 
