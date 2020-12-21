@@ -2,6 +2,9 @@ from collections import namedtuple
 from copy import deepcopy
 from enum import Enum
 from math import prod
+from typing import Set
+
+from aoc_2020.day_20.solution import matching_border
 
 N_DIM = 10
 FLIP_NUMBERS = {i: int(format(i, f"0{N_DIM}b")[::-1], 2) for i in range(2 ** N_DIM)}
@@ -217,27 +220,7 @@ def read_input():
         )
 
 
-if __name__ == "__main__":
-    # m = Matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-    # print(m[1, 1])
-    # print(m[:, 2])
-    # print(m[0:2, :1])
-    # print(tuple(m.rows))
-    # print(tuple(m.cols))
-    # print(m.rot(0))
-    # print(m.rot(1))
-    # print(m.rot(2))
-    # print(m.rot(3))
-    tiles = read_input()
-    print(tiles[0])
-    print(tiles[3])
-    print(tiles[0].flip(1))
-    print(tiles[0].rot90())
-    print(tiles[0].rot90(2))
-    print(tiles[0].rot90(2).flip(0).flip(1))
-    print(tiles[0].borders)
-    print(tiles[0].flip_borders)
-    print(tiles[0].matches_border(tiles[3]))
+def solve_part_one(tiles):
     matching_border_map = {
         tile1._id: set(
             tile2._id
@@ -246,5 +229,46 @@ if __name__ == "__main__":
         )
         for tile1 in tiles
     }
-    print({key: len(val) for key, val in matching_border_map.items() if len(val) == 2})
-    print(prod(key for key, value in matching_border_map.items() if len(value) == 2))
+    border_ids = set(key for key, val in matching_border_map.items() if len(val) == 2)
+    assert len(border_ids) == 4
+    solution = prod(border_ids)
+    return None, solution
+
+
+def gen_neighbors(position, image):
+    for direction in Directions:
+        new_position = position + direction.value
+        if new_position in image:
+            yield direction, new_position, image[new_position]
+
+
+class NoSolutionError(Exception):
+    pass
+
+
+def find_most_constrained_position(image, tiles: Set, matching_borders):
+    position_constrains = {}
+    for position, tile in image.items():
+        possible_tiles = set(tiles)
+        if tile is None:
+            for _, _, neighbor in gen_neighbors(position, image):
+                if not possible_tiles:
+                    raise NoSolutionError(image, tiles, position)
+                if neighbor is not None:
+                    possible_tiles = possible_tiles.intersection(
+                        matching_borders[neighbor.id]
+                    )
+        position_constrains[position] = possible_tiles
+    return min(position_constrains, key=lambda key: len(position_constrains[key]))
+
+
+def gen_images(image, tile_ids, border_tile_ids):
+
+    pass
+
+
+if __name__ == "__main__":
+    tiles = read_input()
+    image, solution_1 = solve_part_one(tiles)
+    assert solution_1 == 2699020245973
+    print(f"The solution to part 1 is '{solution_1}'.")
