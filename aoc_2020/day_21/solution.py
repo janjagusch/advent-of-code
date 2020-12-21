@@ -120,8 +120,24 @@ def solve_part_one(foods):
     return allergen_ingredients, solution
 
 
-ingredient_allergens, solution_1 = solve_part_one(foods)
+allergen_ingredients, solution_1 = solve_part_one(foods)
 
 assert solution_1 == 1945
 
 print(f"The solution to part is '{solution_1}'.")
+
+
+# ## Part 2
+
+
+def solve_part_two(allergen_ingredients):
+    return ",".join(
+        dict(sorted(allergen_ingredients.items(), key=lambda item: item[0])).values()
+    )
+
+
+solution_2 = solve_part_two(allergen_ingredients)
+
+assert solution_2 == "pgnpx,srmsh,ksdgk,dskjpq,nvbrx,khqsk,zbkbgp,xzb"
+
+print(f"The solution to part 2 is '{solution_2}'.")
