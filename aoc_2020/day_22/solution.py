@@ -53,7 +53,7 @@ def read_decks(file_path):
 
 # -
 
-deck1, deck2 = read_decks("./test.txt")
+deck1, deck2 = read_decks("./input.txt")
 
 
 def gen_cards(deck):
@@ -103,3 +103,5 @@ def solve_part_one(deck1, deck2):
 solution_1 = solve_part_one(deck1, deck2)
 
 solution_1
+
+assert solution_1 == 32598
