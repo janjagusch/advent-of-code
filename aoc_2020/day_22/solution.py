@@ -15,12 +15,12 @@
 
 # # Day 22
 
-# ## Part 2
+# ## Part 1
 
 from collections import deque
+from copy import copy
 from itertools import count
 from typing import List
-from copy import copy
 
 
 # +
@@ -109,9 +109,9 @@ def solve_part_one(deck1, deck2):
 
 solution_1 = solve_part_one(deck1, deck2)
 
-solution_1
-
 assert solution_1 == 32598
+
+print(f"The solution to part 1 is '{solution_1}'.")
 
 # ## Part 2
 
@@ -127,8 +127,7 @@ def score(deck: List) -> int:
     This does not empty the deck.
     """
     return sum(
-        card * multiplier
-        for card, multiplier in zip(deck[::-1], count(start=1))
+        card * multiplier for card, multiplier in zip(deck[::-1], count(start=1))
     )
 
 
@@ -138,7 +137,7 @@ def play_game(deck1, deck2):
     while not is_finished(deck1, deck2):
         # if there was a previous round in this
         # game that had exactly the same cards
-        # in the same order in the same players' decks, 
+        # in the same order in the same players' decks,
         # the game instantly ends in a win for player 1
         memory = (tuple(deck1), tuple(deck2))
         if memory in previous_rounds:
@@ -172,8 +171,6 @@ def solve_part_two(deck1, deck2):
 
 
 solution_2 = solve_part_two(deck1, deck2)
-
-solution_2
 
 assert solution_2 == 35836
 
