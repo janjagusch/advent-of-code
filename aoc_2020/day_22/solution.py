@@ -20,6 +20,7 @@
 from collections import deque
 from itertools import count
 from typing import List
+from copy import copy
 
 
 # +
@@ -116,7 +117,7 @@ assert solution_1 == 32598
 
 # Using a list is more useful here.
 
-deck1, deck2 = read_decks("./input.txt")
+deck1, deck2 = read_decks("./test.txt")
 deck1 = list(gen_cards(deck1, bottom_up=False))
 deck2 = list(gen_cards(deck2, bottom_up=False))
 
@@ -132,6 +133,7 @@ def score(deck: List) -> int:
 
 
 def play_game(deck1, deck2):
+    decks = deck1, deck2
     previous_rounds = set()
     while not is_finished(deck1, deck2):
         # if there was a previous round in this
@@ -141,18 +143,38 @@ def play_game(deck1, deck2):
         memory = (tuple(deck1), tuple(deck2))
         if memory in previous_rounds:
             winner = 0
-            return winner, _, _
+            return winner, _
         previous_rounds.add(memory)
         card1 = deck1.pop(0)
         card2 = deck2.pop(0)
-        if card1 > card2:
-            deck1.append(card1)
-            deck1.append(card2)
+        cards = card1, card2
+        # If both players have at least as many cards
+        # remaining in their deck as the value of the card they just drew,
+        # the winner of the round is determined by
+        # playing a new game of Recursive Combat
+        if len(deck1) >= card1 and len(deck2) >= card2:
+            winner, _ = play_game(copy(deck1), copy(deck2))
+        elif card1 > card2:
+            winner = 0
+        # cannot draw
         else:
-            deck2.append(card2)
-            deck2.append(card1)
+            winner = 1
+        looser = 0 if winner else 1
+        decks[winner].append(cards[winner])
+        decks[winner].append(cards[looser])
     winner = 0 if len(deck1) else 1
-    return winner, score(deck1), score(deck2)
+    return winner, (deck1, deck2)
 
 
-play_game(deck1, deck2)
+# +
+def solve_part_two(deck1, deck2):
+    winner, decks = play_game(deck1, deck2)
+    
+    
+# -
+
+
+
+winner
+
+score(decks[winner])
