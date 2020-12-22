@@ -117,7 +117,7 @@ assert solution_1 == 32598
 
 # Using a list is more useful here.
 
-deck1, deck2 = read_decks("./test.txt")
+deck1, deck2 = read_decks("./input.txt")
 deck1 = list(gen_cards(deck1, bottom_up=False))
 deck2 = list(gen_cards(deck2, bottom_up=False))
 
@@ -143,7 +143,7 @@ def play_game(deck1, deck2):
         memory = (tuple(deck1), tuple(deck2))
         if memory in previous_rounds:
             winner = 0
-            return winner, _
+            return winner, None
         previous_rounds.add(memory)
         card1 = deck1.pop(0)
         card2 = deck2.pop(0)
@@ -153,7 +153,7 @@ def play_game(deck1, deck2):
         # the winner of the round is determined by
         # playing a new game of Recursive Combat
         if len(deck1) >= card1 and len(deck2) >= card2:
-            winner, _ = play_game(copy(deck1), copy(deck2))
+            winner, _ = play_game(copy(deck1[:card1]), copy(deck2[:card2]))
         elif card1 > card2:
             winner = 0
         # cannot draw
@@ -166,15 +166,15 @@ def play_game(deck1, deck2):
     return winner, (deck1, deck2)
 
 
-# +
 def solve_part_two(deck1, deck2):
     winner, decks = play_game(deck1, deck2)
-    
-    
-# -
+    return score(decks[winner])
 
 
+solution_2 = solve_part_two(deck1, deck2)
 
-winner
+solution_2
 
-score(decks[winner])
+assert solution_2 == 35836
+
+print(f"The solution to part 2 is '{solution_2}'.")
