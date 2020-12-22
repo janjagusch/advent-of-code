@@ -17,15 +17,16 @@
 
 # ## Part 2
 
-from queue import Queue
+from collections import deque
+from itertools import count
 
 
 # +
 def create_queue(items, maxsize=None):
     maxsize = maxsize or len(items)
-    queue = Queue(maxsize=maxsize)
+    queue = deque(maxlen=maxsize)
     for item in items:
-        queue.put(item)
+        queue.append(item)
     return queue
 
 
@@ -56,40 +57,44 @@ def read_decks(file_path):
 deck1, deck2 = read_decks("./input.txt")
 
 
-def gen_cards(deck):
+# +
+def gen_cards(deck, bottom_up=True):
     """
-    This empties the deck!
+    Empties the deck!
     """
-    while not deck.empty():
-        yield deck.get(block=False)
-    return
+    func = deck.pop if bottom_up else deck.popleft
+    while True:
+        try:
+            yield func()
+        except IndexError:
+            return
 
 
 def score(deck):
     """
-    This emties the deck!
+    Empties the deck!
     """
-    cards = tuple(gen_cards(deck))
-    multipliers = range(len(cards), 0, -1)
-    return sum(card * multiplier for card, multiplier in zip(cards, multipliers))
+    return sum(
+        card * multiplier
+        for card, multiplier in zip(gen_cards(deck, bottom_up=True), count(start=1))
+    )
 
 
 # +
 def is_finished(deck1, deck2):
-    return deck1.empty() or deck2.empty()
+    return not len(deck1) or not len(deck2)
 
 
 def play_game(deck1, deck2):
     while not is_finished(deck1, deck2):
-        card1 = deck1.get(block=False)
-        card2 = deck2.get(block=False)
-        # draw is not possible
+        card1 = deck1.popleft()
+        card2 = deck2.popleft()
         if card1 > card2:
-            deck1.put(card1)
-            deck1.put(card2)
+            deck1.append(card1)
+            deck1.append(card2)
         else:
-            deck2.put(card2)
-            deck2.put(card1)
+            deck2.append(card2)
+            deck2.append(card1)
     return score(deck1), score(deck2)
 
 
