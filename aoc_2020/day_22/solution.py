@@ -19,6 +19,7 @@
 
 from collections import deque
 from itertools import count
+from typing import List
 
 
 # +
@@ -110,3 +111,48 @@ solution_1 = solve_part_one(deck1, deck2)
 solution_1
 
 assert solution_1 == 32598
+
+# ## Part 2
+
+# Using a list is more useful here.
+
+deck1, deck2 = read_decks("./input.txt")
+deck1 = list(gen_cards(deck1, bottom_up=False))
+deck2 = list(gen_cards(deck2, bottom_up=False))
+
+
+def score(deck: List) -> int:
+    """
+    This does not empty the deck.
+    """
+    return sum(
+        card * multiplier
+        for card, multiplier in zip(deck[::-1], count(start=1))
+    )
+
+
+def play_game(deck1, deck2):
+    previous_rounds = set()
+    while not is_finished(deck1, deck2):
+        # if there was a previous round in this
+        # game that had exactly the same cards
+        # in the same order in the same players' decks, 
+        # the game instantly ends in a win for player 1
+        memory = (tuple(deck1), tuple(deck2))
+        if memory in previous_rounds:
+            winner = 0
+            return winner, _, _
+        previous_rounds.add(memory)
+        card1 = deck1.pop(0)
+        card2 = deck2.pop(0)
+        if card1 > card2:
+            deck1.append(card1)
+            deck1.append(card2)
+        else:
+            deck2.append(card2)
+            deck2.append(card1)
+    winner = 0 if len(deck1) else 1
+    return winner, score(deck1), score(deck2)
+
+
+play_game(deck1, deck2)
