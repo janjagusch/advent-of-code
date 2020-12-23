@@ -18,8 +18,9 @@
 # ## Day 1
 
 from itertools import count, islice
+from array import array
 
-CUP_LABELLING = "368195742"
+CUP_LABELLING = "389125467"
 
 
 def process_cup_labelling(cup_labelling):
@@ -123,6 +124,103 @@ def solve_part_one(circle):
 
 solution_1 = solve_part_one(circle)
 
-assert solution_1 == "95648732"
+solution_1
+
+# +
+# assert solution_1 == "95648732"
+# -
 
 print(f"The solution to part 1 is '{solution_1}'.")
+
+# ## Part 2
+
+circle2 = array("I", circle + list(range(max(circle) + 1, 1_000_000)))
+
+
+# +
+def pick_up(circle, current_index, n_pick_ups):
+    """
+    The crab picks up the three cups that are immediately
+    clockwise of the current cup. They are removed from the circle.
+    """
+    end_index = current_index + n_pick_ups
+    end_index %= len(circle)
+    if end_index <= current_index:
+        pick_ups = circle[current_index:] + circle[:end_index]
+        circle = circle[end_index:current_index]
+    else:
+        pick_ups = circle[current_index:end_index]
+        circle = circle[:current_index] + circle[end_index:]
+    return circle, pick_ups  
+
+def find_destination(current, possible_cups, pick_ups, cup_len):
+    """
+    The crab selects a destination cup: the cup with a label equal
+    to the current cup's label minus one. If this would select 
+    ne of the cups that was just picked up, the crab will keep
+    subtracting one until it finds a cup that wasn't just picked up.
+    If at any point in this process the value goes below the lowest
+    value on any cup's label, it wraps around to the highest value
+    on any cup's label instead.
+    """
+    for i in range(1, cup_len):
+        destination = (current - i) % cup_len
+        if destination not in pick_ups:
+            return destination
+    raise ValueError(current, cup_len, possible_cup)
+
+
+# -
+
+def play_game(circle, n_pick_ups=3):
+    circle = array("I", circle)
+    circle_len = len(circle)
+    for current_index in gen_current_position(circle_len):
+        # print(circle)
+        # print(f"cups: {' '.join(str(val) for val in circle)}")
+        current = circle[current_index]
+        circle, pick_ups = pick_up(circle, current_index + 1, n_pick_ups)
+        # print(f"current: {current}")
+        # print(f"pick up: {pick_ups}")
+        destination = find_destination(current, circle, pick_ups, circle_len)
+        # print(f"destination: {destination}")
+        destination_index = circle.index(destination)
+        # print(f"sub circle: {circle}")
+        place_cups(circle, pick_ups, destination_index + 1)
+        # print(f"new circle: {circle}")
+        circle = reorder_circle(circle, current, current_index)
+        # print("")
+        yield circle
+
+
+solution_1 = solve_part_one(circle)
+
+solution_1
+
+assert solution_1 == "67384529"
+
+
+def solve_part_two(circle):
+    circle = tuple(islice(play_game(circle), 10_000_000))[-1]
+    circle = relabel_cups(circle)
+    start_index = circle.index(1)
+    circle = (circle[start_index:] + circle[:start_index])[1:]
+    return "".join(str(val) for val in circle)
+
+
+# +
+# solve_part_two(circle)
+# -
+
+for i, state in enumerate(islice(play_game(circle2), 10_000_000)):
+    if not i % 100:
+        print(i)
+    
+
+
+
+a = array("H", [1, 2, 3])
+
+a[0]
+
+
