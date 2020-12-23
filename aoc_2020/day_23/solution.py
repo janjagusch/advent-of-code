@@ -19,7 +19,7 @@
 
 from itertools import count, islice
 
-CUP_LABELLING = "389125467"
+CUP_LABELLING = "368195742"
 
 
 def process_cup_labelling(cup_labelling):
@@ -123,4 +123,6 @@ def solve_part_one(circle):
 
 solution_1 = solve_part_one(circle)
 
-assert solution_1 == "67384529"
+assert solution_1 == "95648732"
+
+print(f"The solution to part 1 is '{solution_1}'.")
