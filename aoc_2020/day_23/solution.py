@@ -55,10 +55,6 @@ class LinkedList:
             node.next_node = next_node
         nodes[-1].next_node = nodes[0]
 
-    @property
-    def head(self):
-        return self._head
-
     def __getitem__(self, index) -> LinkedNode:
         return self._nodes_map[index]
 
@@ -70,17 +66,6 @@ class LinkedList:
 
     def __len__(self):
         return len(self._nodes_map)
-
-    @property
-    def data(self):
-        visited_nodes = set()
-        data = []
-        for node in self:
-            if node in visited_nodes:
-                return data
-            data.append(node)
-            visited_nodes.add(node)
-        return data
 
     def __repr__(self):
         return f"{self.__class__.__name__}({self.data})"
