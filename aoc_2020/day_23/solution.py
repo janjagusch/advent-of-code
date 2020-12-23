@@ -20,6 +20,7 @@
 from itertools import count, islice
 from array import array
 from math import prod
+from typing import Iterable
 
 
 # +
@@ -94,8 +95,6 @@ CUP_LABELLING = "389125467"
 nodes = tuple(LinkedNode(int(val) - 1) for val in CUP_LABELLING)
 cups = LinkedList(nodes)
 
-from typing import Iterable
-
 
 def find_destination(current: LinkedNode, pick_ups: Iterable[LinkedNode], cups: LinkedList) -> LinkedNode:
     """
@@ -114,17 +113,10 @@ def find_destination(current: LinkedNode, pick_ups: Iterable[LinkedNode], cups: 
     raise ValueError(current, pick_ups)
 
 
-from copy import deepcopy
-
-
 def play_game(cups, n_pick_ups=3):  
     for current in cups:
-        # print(cups)
-        # print(current)
         pick_ups = tuple(current.gen_next_n_nodes(n_pick_ups))
-        # print(pick_ups)
         destination = find_destination(current, pick_ups, cups)
-        # print(destination)
         current.next_node = pick_ups[-1].next_node
         pick_ups[-1].next_node = destination.next_node
         destination.next_node = pick_ups[0]
@@ -138,9 +130,7 @@ def solve(cups, n_moves):
 
 solution_1 = solve(cups, 100)
 
-# +
-# assert solution_1 == "95648732"
-# -
+assert solution_1 == "95648732"
 
 print(f"The solution to part 1 is '{solution_1}'.")
 
@@ -156,7 +146,5 @@ def solve_part_two(cups):
 
 
 solution_2 = solve_part_two(cups)
-
-solution_2
 
 assert solution_2 == 149245887792
