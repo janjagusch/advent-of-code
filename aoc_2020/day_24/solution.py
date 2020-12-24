@@ -65,8 +65,6 @@ class Array:
         return self._vals.__hash__()
 
 
-DIRECTIONS = ("e", "se", "sw", "w", "nw", "ne")
-
 DIRECTIONS = {
     "e": Array(1, -1, 0),
     "se": Array(0, -1, 1),
