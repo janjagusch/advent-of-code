@@ -16,6 +16,6 @@ Things that I have learned/got better at:
 * Reading really whacky file formats ([18](./day_18), [19](./day_19) and more ...)
 * Building generators and working with the `itertools` library ([17](./day_17) and many more ...)
 
-Thanks to [Eric Wastl](https://github.com/topaz) for making these Christmassy puzzles!
+Thanks to [Eric Wastl](https://github.com/topaz) for making these Christmassy puzzles! 🎅
 
 
