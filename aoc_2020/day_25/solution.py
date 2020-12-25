@@ -69,8 +69,6 @@ assert calc_encryption_key(card_public_key, door_loop_size) == calc_encryption_k
 
 # ## Not Knowing Loop Size
 
-# You can use either device's loop size with the other device's public key to calculate the encryption key.
-
 
 def find_loop_size(transformation_value, subject_number=7, value=1):
     for transformation in gen_transformations(subject_number, value):
