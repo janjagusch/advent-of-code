@@ -11,6 +11,7 @@ Things that I have learned/got better at:
 * Applying the [Chinese Remainder Theorem](https://en.wikipedia.org/wiki/Chinese_remainder_theorem) ([13](./day_13))
 * Working with binary operations ([14](./day_14))
 * Implementing a linked list ([23](./day_23))
+* Working with [Hexagonal Grids](https://www.redblobgames.com/grids/hexagons/) ([24](./day_24))
 * Working with Python's special methods ([12](./day_12), [17](./day_17) and more ...)
 * Working with `deque` ([22](./day_22))
 * Reading really whacky file formats ([18](./day_18), [19](./day_19) and more ...)
