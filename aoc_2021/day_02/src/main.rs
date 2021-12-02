@@ -57,10 +57,6 @@ impl std::fmt::Debug for Command {
 
 fn read_input(filename: &str) -> Vec<Command> {
     let content = fs::read_to_string(filename).expect("Something went wrong reading the file");
-    // for row in content.trim().split("\n") {
-    //     let command = Command::from_row(row).expect("Shit.");
-    //     println!("{}", command);
-    // }
     content
         .trim() // Trim leading and trailing whitespaces.
         .split("\n") // Split by newline.
