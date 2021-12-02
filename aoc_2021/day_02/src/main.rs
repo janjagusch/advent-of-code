@@ -68,7 +68,7 @@ fn read_input(filename: &str) -> Vec<Command> {
         .collect() // Collect all values, because map applies lazily.
 }
 
-fn solve1(commands: Vec<Command>) -> u32 {
+fn solve1(commands: &Vec<Command>) -> u32 {
     let mut horizontal_pos = 0;
     let mut vertical_pos = 0;
     for command in commands {
@@ -83,11 +83,37 @@ fn solve1(commands: Vec<Command>) -> u32 {
     return horizontal_pos * vertical_pos;
 }
 
+fn solve2(commands: &Vec<Command>) -> u32 {
+    // down X increases your aim by X units.
+    // up X decreases your aim by X units.
+    // forward X does two things:
+    // It increases your horizontal position by X units.
+    // It increases your depth by your aim multiplied by X.
+    let mut aim = 0;
+    let mut horizontal_pos = 0;
+    let mut vertical_pos = 0;
+    for command in commands {
+        if matches!(command.direction, Direction::Up) {
+            aim = aim - command.step;
+        } else if matches!(command.direction, Direction::Down) {
+            aim = aim + command.step;
+        } else {
+            horizontal_pos = horizontal_pos + command.step;
+            vertical_pos = vertical_pos + aim * command.step;
+        }
+    }
+    return horizontal_pos * vertical_pos;
+}
+
 fn main() {
     let commands = read_input("input.txt");
     // println!("{:?}", commands);
 
-    let solution1 = solve1(commands);
+    let solution1 = solve1(&commands);
     assert!(solution1 == 1727835); // That's the expected value for my input set.
     println!("Solution 1: {}", solution1);
+
+    let solution2 = solve2(&commands);
+    assert!(solution1 == 1544000595); // That's the expected value for my input set.
+    println!("Solution 2: {}", solution2);
 }
