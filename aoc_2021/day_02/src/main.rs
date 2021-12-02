@@ -18,16 +18,25 @@ impl Command {
         let direction = splitter.next().unwrap();
         let step = splitter.next().unwrap().parse::<u32>().unwrap();
         match direction {
-            "forward" => Ok(Command{direction: Direction::Forward, step: step}),
-            "up" => Ok(Command{direction: Direction::Up, step: step}),
-            "down" => Ok(Command{direction: Direction::Down, step: step}),
+            "forward" => Ok(Command {
+                direction: Direction::Forward,
+                step: step,
+            }),
+            "up" => Ok(Command {
+                direction: Direction::Up,
+                step: step,
+            }),
+            "down" => Ok(Command {
+                direction: Direction::Down,
+                step: step,
+            }),
             _ => Err(direction.to_string()),
         }
     }
 }
 
-impl std::fmt::Display for Direction {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+impl std::fmt::Debug for Direction {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match *self {
             Direction::Up => write!(f, "Direction(Up)"),
             Direction::Forward => write!(f, "Direction(Forward)"),
@@ -36,20 +45,49 @@ impl std::fmt::Display for Direction {
     }
 }
 
-impl std::fmt::Display for Command {
+impl std::fmt::Debug for Command {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "Command(direction={}, step={})", self.direction, self.step)
+        write!(
+            f,
+            "Command(direction={:?}, step={})",
+            self.direction, self.step
+        )
     }
 }
 
-fn read_input(filename: &str) -> () {
+fn read_input(filename: &str) -> Vec<Command> {
     let content = fs::read_to_string(filename).expect("Something went wrong reading the file");
-    for row in content.trim().split("\n") {
-        let command = Command::from_row(row).expect("Shit.");
-        println!("{}", command);
+    // for row in content.trim().split("\n") {
+    //     let command = Command::from_row(row).expect("Shit.");
+    //     println!("{}", command);
+    // }
+    content
+        .trim() // Trim leading and trailing whitespaces.
+        .split("\n") // Split by newline.
+        .map(|x| Command::from_row(x).unwrap()) // For every element, create Command struct.
+        .collect() // Collect all values, because map applies lazily.
+}
+
+fn solve1(commands: Vec<Command>) -> u32 {
+    let mut horizontal_pos = 0;
+    let mut vertical_pos = 0;
+    for command in commands {
+        if matches!(command.direction, Direction::Up) {
+            vertical_pos = vertical_pos - command.step;
+        } else if matches!(command.direction, Direction::Down) {
+            vertical_pos = vertical_pos + command.step;
+        } else {
+            horizontal_pos = horizontal_pos + command.step;
+        }
     }
+    return horizontal_pos * vertical_pos;
 }
 
 fn main() {
-    let input = read_input("input.txt");
+    let commands = read_input("input.txt");
+    // println!("{:?}", commands);
+
+    let solution1 = solve1(commands);
+    assert!(solution1 == 1727835); // That's the expected value for my input set.
+    println!("Solution 1: {}", solution1);
 }
