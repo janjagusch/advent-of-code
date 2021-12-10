@@ -60,7 +60,6 @@ fn solve2(diagnostics: &Vec<u32>) -> u32 {
     }
     let co2_rating = remaining_diagnostics.into_iter().nth(0).unwrap();
     co2_rating * oxygen_rating
-
 }
 
 fn main() {
